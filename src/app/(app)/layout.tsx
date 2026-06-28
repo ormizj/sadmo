@@ -1,27 +1,13 @@
 import Link from "next/link";
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  BarChart3,
-  Settings,
-  Search,
-  Bell,
-} from "lucide-react";
+import { Search, Bell } from "lucide-react";
 import Logo from "@/components/Logo";
+import { NAV } from "@/config/nav";
 
 /**
  * TEMPLATE — authenticated CRM shell (sidebar + topbar).
  * Navigation and user data are placeholders; wiring comes with the real
  * app screens and auth.
  */
-const NAV = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
-  { label: "Contacts", icon: Users, href: "#" },
-  { label: "Companies", icon: Building2, href: "#" },
-  { label: "Reports", icon: BarChart3, href: "#" },
-  { label: "Settings", icon: Settings, href: "#" },
-];
 
 export default function AppLayout({
   children,
