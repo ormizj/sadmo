@@ -1,0 +1,66 @@
+{
+  "Metadata": {
+    "title": "Sadmo CRM",
+    "description": "Sadmo — un CRM moderne pour gérer vos relations clients."
+  },
+  "AppShell": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "contacts": "Contacts",
+      "companies": "Entreprises",
+      "reports": "Rapports",
+      "settings": "Paramètres"
+    },
+    "search": "Rechercher…",
+    "notifications": "Notifications",
+    "user": {
+      "fallbackName": "Utilisateur",
+      "fallbackEmail": "utilisateur@entreprise.com"
+    }
+  },
+  "Dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Ceci est un espace réservé pour la coque CRM authentifiée.",
+    "cards": {
+      "contacts": "Contacts",
+      "openDeals": "Affaires en cours",
+      "tasksDue": "Tâches à échéance"
+    },
+    "comingSoon": "Bientôt disponible"
+  },
+  "Login": {
+    "title": "Bon retour",
+    "subtitle": "Connectez-vous à votre compte Sadmo pour continuer.",
+    "email": {
+      "label": "E-mail",
+      "placeholder": "vous@entreprise.com",
+      "required": "L'e-mail est requis.",
+      "invalid": "Saisissez une adresse e-mail valide."
+    },
+    "password": {
+      "label": "Mot de passe",
+      "placeholder": "••••••••",
+      "required": "Le mot de passe est requis.",
+      "show": "Afficher le mot de passe",
+      "hide": "Masquer le mot de passe"
+    },
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": {
+      "idle": "Se connecter",
+      "loading": "Connexion…"
+    },
+    "orSeparator": "OU",
+    "continueWithGoogle": "Continuer avec Google",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "signUp": "S'inscrire"
+  },
+  "LocaleSwitcher": {
+    "label": "Langue",
+    "locales": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    }
+  }
+}

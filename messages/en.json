@@ -1,0 +1,66 @@
+{
+  "Metadata": {
+    "title": "Sadmo CRM",
+    "description": "Sadmo — a modern CRM for managing your customer relationships."
+  },
+  "AppShell": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "contacts": "Contacts",
+      "companies": "Companies",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "search": "Search…",
+    "notifications": "Notifications",
+    "user": {
+      "fallbackName": "User",
+      "fallbackEmail": "user@company.com"
+    }
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "subtitle": "This is a placeholder for the authenticated CRM shell.",
+    "cards": {
+      "contacts": "Contacts",
+      "openDeals": "Open deals",
+      "tasksDue": "Tasks due"
+    },
+    "comingSoon": "Coming soon"
+  },
+  "Login": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to your Sadmo account to continue.",
+    "email": {
+      "label": "Email",
+      "placeholder": "you@company.com",
+      "required": "Email is required.",
+      "invalid": "Enter a valid email address."
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "••••••••",
+      "required": "Password is required.",
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "submit": {
+      "idle": "Sign in",
+      "loading": "Signing in…"
+    },
+    "orSeparator": "OR",
+    "continueWithGoogle": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "locales": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    }
+  }
+}

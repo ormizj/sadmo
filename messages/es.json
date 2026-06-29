@@ -1,0 +1,66 @@
+{
+  "Metadata": {
+    "title": "Sadmo CRM",
+    "description": "Sadmo — un CRM moderno para gestionar tus relaciones con clientes."
+  },
+  "AppShell": {
+    "nav": {
+      "dashboard": "Panel",
+      "contacts": "Contactos",
+      "companies": "Empresas",
+      "reports": "Informes",
+      "settings": "Ajustes"
+    },
+    "search": "Buscar…",
+    "notifications": "Notificaciones",
+    "user": {
+      "fallbackName": "Usuario",
+      "fallbackEmail": "usuario@empresa.com"
+    }
+  },
+  "Dashboard": {
+    "title": "Panel",
+    "subtitle": "Este es un marcador de posición para la interfaz autenticada del CRM.",
+    "cards": {
+      "contacts": "Contactos",
+      "openDeals": "Negocios abiertos",
+      "tasksDue": "Tareas pendientes"
+    },
+    "comingSoon": "Próximamente"
+  },
+  "Login": {
+    "title": "Bienvenido de nuevo",
+    "subtitle": "Inicia sesión en tu cuenta de Sadmo para continuar.",
+    "email": {
+      "label": "Correo electrónico",
+      "placeholder": "tu@empresa.com",
+      "required": "El correo electrónico es obligatorio.",
+      "invalid": "Introduce una dirección de correo válida."
+    },
+    "password": {
+      "label": "Contraseña",
+      "placeholder": "••••••••",
+      "required": "La contraseña es obligatoria.",
+      "show": "Mostrar contraseña",
+      "hide": "Ocultar contraseña"
+    },
+    "rememberMe": "Recuérdame",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "submit": {
+      "idle": "Iniciar sesión",
+      "loading": "Iniciando sesión…"
+    },
+    "orSeparator": "O",
+    "continueWithGoogle": "Continuar con Google",
+    "noAccount": "¿No tienes una cuenta?",
+    "signUp": "Regístrate"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "locales": {
+      "en": "English",
+      "fr": "Français",
+      "es": "Español"
+    }
+  }
+}

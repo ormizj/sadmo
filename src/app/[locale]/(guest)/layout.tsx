@@ -1,3 +1,5 @@
+import LocaleSwitcher from "@/components/LocaleSwitcher";
+
 export default function GuestLayout({
   children,
 }: {
@@ -18,6 +20,10 @@ export default function GuestLayout({
         aria-hidden
         className="pointer-events-none absolute top-1/3 left-1/2 size-72 -translate-x-1/2 rounded-full bg-violet-200/40 blur-3xl"
       />
+
+      <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
+        <LocaleSwitcher />
+      </div>
 
       <div className="relative z-10 w-full max-w-md">{children}</div>
     </div>
