@@ -1,24 +1,9 @@
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  BarChart3,
-  Settings,
-  Search,
-  Bell,
-} from "lucide-react";
+import { Search, Bell } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Logo from "@/components/Logo";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-
-const NAV = [
-  { key: "dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
-  { key: "contacts", icon: Users, href: "#", active: false },
-  { key: "companies", icon: Building2, href: "#", active: false },
-  { key: "reports", icon: BarChart3, href: "#", active: false },
-  { key: "settings", icon: Settings, href: "#", active: false },
-] as const;
+import { NAV } from "@/config/nav";
 
 export default async function AppLayout({
   children,

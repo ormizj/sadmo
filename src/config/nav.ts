@@ -8,16 +8,16 @@ import {
 } from "lucide-react";
 
 export type NavItem = {
-  label: string;
+  key: string;
   icon: LucideIcon;
   href: string;
   active?: boolean;
 };
 
 export const NAV: NavItem[] = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
-  { label: "Contacts", icon: Users, href: "#" },
-  { label: "Companies", icon: Building2, href: "#" },
-  { label: "Reports", icon: BarChart3, href: "#" },
-  { label: "Settings", icon: Settings, href: "#" },
+  { key: "dashboard", icon: LayoutDashboard, href: "/dashboard", active: true },
+  { key: "contacts", icon: Users, href: "#" },
+  { key: "companies", icon: Building2, href: "#" },
+  { key: "reports", icon: BarChart3, href: "#" },
+  { key: "settings", icon: Settings, href: "#" },
 ];
