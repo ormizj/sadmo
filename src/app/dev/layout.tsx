@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
+import "../globals.css";
 
 export default async function DevLayout({
   children,
@@ -12,22 +13,28 @@ export default async function DevLayout({
   await connection();
   if (process.env.NODE_ENV === "production") notFound();
 
+  // The /dev tree lives outside [locale], so it needs its own root <html>/<body>
+  // — the localized root layout doesn't wrap it.
   return (
-    <div className="min-h-dvh flex-1 bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Link
-            href="/dev"
-            className="text-sm font-semibold tracking-tight text-slate-900"
-          >
-            Sadmo · Dev
-          </Link>
-          <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
-            non-production only
-          </span>
+    <html lang="en" className="h-full antialiased">
+      <body className="flex min-h-full flex-col">
+        <div className="min-h-dvh flex-1 bg-slate-50">
+          <header className="border-b border-slate-200 bg-white">
+            <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+              <Link
+                href="/dev"
+                className="text-sm font-semibold tracking-tight text-slate-900"
+              >
+                Sadmo · Dev
+              </Link>
+              <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+                non-production only
+              </span>
+            </div>
+          </header>
+          {children}
         </div>
-      </header>
-      {children}
-    </div>
+      </body>
+    </html>
   );
 }
