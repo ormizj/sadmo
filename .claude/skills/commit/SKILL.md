@@ -1,29 +1,33 @@
 ---
-allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(git push:*), Bash(git log:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git reset), AskUserQuestion
+name: commit
 description: Group working-tree changes into logical commits, optionally push
+user-invocable: true
+allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git diff:*), Bash(git commit:*), Bash(git push:*), Bash(git log:*), Bash(git branch:*), Bash(git rev-parse:*), Bash(git reset), AskUserQuestion
 ---
 
-## Context
+## Step 0 — Gather Context
 
-- Current git status: !`git status`
-- Current git diff (staged and unstaged changes): !`git diff HEAD`
-- Current branch: !`git branch --show-current`
-- Upstream (if any): !`git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo "(no upstream)"`
-- Recent commits (for style reference): !`git log --oneline -10`
+Before doing anything else, run these commands (in a single message, in parallel) and use their output as the state for the rest of the workflow:
 
-## Your task
+- `git status`
+- `git diff HEAD`
+- `git branch --show-current`
+- `git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo "(no upstream)"` — captures the upstream, or reports `(no upstream)`.
+- `git log --oneline -10` — style reference for the commit subject.
+
+## Your Task
 
 If the working tree is clean (no staged, unstaged, or untracked changes in the status above), report "nothing to commit" and stop. Do not call any tools.
 
 Otherwise, run this workflow:
 
-### 1. Group the changes
+### Step 1. Group the Changes
 
 Cluster the changed files into 2–5 **logical groups by concern** based on the status and diff above. Examples of good grouping axes: feature area (auth, i18n, dashboard), kind of change (deps vs. config vs. source), or route/module boundaries. Each group needs a short label (e.g. "i18n scaffolding") and a one-line summary of what it contains.
 
 If everything is clearly one concern, skip the grouping UI and treat the whole tree as a single implicit "everything" group.
 
-### 2. Ask both questions in one `AskUserQuestion` call
+### Step 2. Ask Both Questions in One `AskUserQuestion` Call
 
 Send a single `AskUserQuestion` tool call with **two questions** so they render in parallel:
 
@@ -39,7 +43,7 @@ Options, in this exact order:
 1. Label: `Yes, push to origin (Recommended)`.
 2. Label: `No, keep local`.
 
-### 3. Commit — read this carefully, it is the part that breaks
+### Step 3. Commit — Read This Carefully, It Is the Part That Breaks
 
 A bare `git commit` commits **the entire index**, not just files you just `git add`-ed. If anything was already staged when this command started, it will leak into the first group's commit. To prevent that, every commit below uses an **explicit pathspec** on `git commit` itself — that pathspec is the final guard.
 
@@ -60,7 +64,7 @@ Commit message style: short imperative subject, no trailing period, matching the
 
 You have the capability to call multiple tools in a single response. Within one group's three commands, send them in a single message.
 
-### 4. Push (conditional)
+### Step 4. Push (Conditional)
 
 If Q2 = Yes:
 - If Context shows `(no upstream)`, run `git push -u origin <current-branch>`.
@@ -68,6 +72,6 @@ If Q2 = Yes:
 
 If Q2 = No, skip pushing.
 
-### 5. Report
+### Step 5. Report
 
 End with a single short summary: the commit subject(s) created and whether the push ran.
