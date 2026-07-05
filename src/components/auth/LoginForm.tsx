@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { Mail, Lock } from "lucide-react";
 import TextField from "@/components/ui/TextField";
@@ -16,7 +16,7 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<LoginErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const next = validateLogin({ email, password });
     setErrors(next);

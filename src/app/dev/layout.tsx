@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -6,7 +7,7 @@ import "../globals.css";
 export default async function DevLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   // Evaluate the gate per-request so production returns a real 404 status,
   // rather than a statically prerendered not-found page served with 200.

@@ -1,9 +1,10 @@
+import type { ReactNode } from "react";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 export default function GuestLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="relative flex min-h-dvh flex-1 items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 px-4 py-10">
