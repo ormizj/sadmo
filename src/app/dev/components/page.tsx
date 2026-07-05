@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { Mail, Plus } from "lucide-react";
 import Logo from "@/components/Logo";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 import Button from "@/components/ui/Button";
 import TextField from "@/components/ui/TextField";
 import PasswordField from "@/components/ui/PasswordField";
@@ -26,8 +27,22 @@ export default function ComponentsDevPage() {
         <Swatch label="markOnly">
           <Logo markOnly />
         </Swatch>
-        <Swatch label='className="scale-150"'>
-          <Logo className="scale-150" />
+        <Swatch label='className="scale-150"' full>
+          <div className="flex min-h-14 items-center">
+            <Logo className="origin-left scale-150" />
+          </div>
+        </Swatch>
+      </Section>
+
+      <Section title="Google icon">
+        <Swatch label='className="size-4"'>
+          <GoogleIcon className="size-4" />
+        </Swatch>
+        <Swatch label='className="size-5"'>
+          <GoogleIcon className="size-5" />
+        </Swatch>
+        <Swatch label='className="size-6"'>
+          <GoogleIcon className="size-6" />
         </Swatch>
       </Section>
 
@@ -48,8 +63,14 @@ export default function ComponentsDevPage() {
             Outline
           </Button>
         </Swatch>
-        <Swatch label="with leading icon">
+        <Swatch label="primary · with leading icon">
           <Button variant="primary">
+            <Plus className="size-4" />
+            New
+          </Button>
+        </Swatch>
+        <Swatch label="outline · with leading icon">
+          <Button variant="outline">
             <Plus className="size-4" />
             New
           </Button>
@@ -89,6 +110,14 @@ export default function ComponentsDevPage() {
             placeholder="Disabled"
             defaultValue="acme-inc"
             disabled
+          />
+        </Swatch>
+        <Swatch label="trailing (static)" full>
+          <TextField
+            id="tf-trailing"
+            label="Website"
+            placeholder="acme"
+            trailing={<span className="text-xs text-slate-400">.com</span>}
           />
         </Swatch>
         <Swatch label="With trailing toggle (interactive)" full>
