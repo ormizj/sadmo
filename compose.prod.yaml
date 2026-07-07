@@ -1,0 +1,7 @@
+services:
+  web:
+    build:
+      target: runner
+    restart: unless-stopped
+    # environment:
+    #   - NEXT_PUBLIC_EXAMPLE=value

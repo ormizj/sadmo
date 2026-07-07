@@ -8,7 +8,14 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "validate": "npm run lint && npm run typecheck"
+    "validate": "npm run lint && npm run typecheck",
+    "docker:up:dev": "docker compose up --build",
+    "docker:up:prod": "docker compose -f compose.yaml -f compose.prod.yaml up -d --build",
+    "docker:down:dev": "docker compose down",
+    "docker:down:prod": "docker compose -f compose.yaml -f compose.prod.yaml down",
+    "docker:logs:dev": "docker compose logs -f",
+    "docker:logs:prod": "docker compose -f compose.yaml -f compose.prod.yaml logs -f",
+    "docker:build:prod": "docker compose -f compose.yaml -f compose.prod.yaml build"
   },
   "dependencies": {
     "lucide-react": "^1.21.0",
