@@ -13,6 +13,31 @@ app on http://localhost:3000.
 - [`dockerignore.md`](./dockerignore.md) — what's excluded from the build context,
   and why.
 
+## Two naming axes — why `dev` matches but `prod` doesn't
+
+Stage names and environment names are **different things and don't have to line
+up**:
+
+- **Dockerfile stage** = a *build role* (`base`, `deps`, `dev`, `builder`,
+  `runner`). `runner`/`builder` is the canonical Next.js naming.
+- **Compose file / npm-script suffix** = a *deployment environment* (`dev`, `prod`).
+
+The `dev` **stage** sharing a token with the `dev` **environment** is a
+coincidence, not a rule — which is why `prod` maps to the `runner` stage, not a
+stage called `prod`. The mapping is not 1:1 either: a future `compose.staging.yaml`
+would target `runner` too, since staging runs the production image.
+
+| Axis | Dev | Prod |
+|---|---|---|
+| Dockerfile stage (`AS …`) — a **build role** | `dev` | `runner` |
+| Compose file — a **deployment env** | `compose.override.yaml` | `compose.prod.yaml` |
+| `build.target` | `dev` | `runner` |
+| npm script suffix — **env** | `:dev` | `:prod` |
+
+The uniform `dev` column and the split `prod`/`runner` column are the same fact
+seen twice: only the *environment* axis uses `prod`; the *build-role* axis calls
+that image `runner`.
+
 ## Commands
 
 Scripts follow the de-facto npm convention `docker:<task>:<env>` — task first,

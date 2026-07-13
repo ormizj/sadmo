@@ -71,6 +71,24 @@ with no `--target` runs top-to-bottom and ends at `runner`. Prod still pins
 `target: runner` explicitly so a stage added below it can't hijack the default — see
 [`compose.md`](./compose.md).
 
+## Does stage order matter?
+
+Yes, in two ways — beyond these, the relative order of stages is free:
+
+- **Define before reference.** A stage can only `FROM` or `COPY --from=` a stage
+  written *above* it. `runner`'s `COPY --from=builder` works only because `builder`
+  appears first; a forward reference fails — BuildKit errors out, and a bare
+  `FROM <later-stage>` is instead treated as a registry image to pull, not a stage.
+  So `base` must precede everything, `deps` must precede `dev`/`builder`, and
+  `builder` must precede `runner`.
+- **The last stage is the default target.** `docker build` with no `--target` builds
+  the final stage — here `runner`. A stage appended *below* it would silently become
+  the default, which is why prod pins `target: runner` (see [`compose.md`](./compose.md)).
+
+Everything else is unconstrained: `dev` and `builder` both depend only on `base` +
+`deps`, so their order relative to each other doesn't matter — as long as `runner`
+stays last and every stage stays below the stages it copies from.
+
 ## `NODE_ENV` vs deployment environment
 
 Keep the two axes separate. `NODE_ENV` describes the **build mode** and Node only
