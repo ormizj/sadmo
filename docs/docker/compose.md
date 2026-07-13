@@ -1,18 +1,16 @@
-# Docker
+# Compose
 
-Multi-stage `Dockerfile` (`deps` → `dev` / `builder` → `runner`) driven by a single
-logical **`web`** service, layered across three Compose files (Docker's documented
-base + override + prod convention):
+A single logical **`web`** service is layered across three Compose files (Docker's
+documented base + override + prod convention). Each file sets which
+[Dockerfile stage](./dockerfile.md) the build targets and its environment-specific extras:
 
 - **`compose.yaml`** — base shared by every environment (the `web` service, build
   context, port `3000`).
-- **`compose.override.yaml`** — development overrides (`dev` target, source
-  bind-mount, `npm run dev`). **Auto-loaded** on a bare `docker compose up`.
-- **`compose.prod.yaml`** — production overrides (`runner` target, `restart` policy),
+- **`compose.override.yaml`** — development overrides (`target: dev`, source bind-mount,
+  `npm run dev`). **Auto-loaded** on a bare `docker compose up`.
+- **`compose.prod.yaml`** — production overrides (`target: runner`, `restart` policy),
   served from Next's standalone output (`node server.js`). Loaded **explicitly** via
   `-f compose.yaml -f compose.prod.yaml`.
-
-Relies on `output: "standalone"` in `next.config.ts`.
 
 ## Why one `web` service + layered files
 
@@ -42,6 +40,37 @@ files winning. The rules differ by YAML type — this is what makes the layering
 
 The base holds `ports` once so both environments inherit it; dev/prod each set only
 their own `target` and extras.
+
+## `target`: which stage each environment stops at
+
+`build.target` tells Compose to **stop the build at a named [Dockerfile stage](./dockerfile.md)**
+instead of running the file to its end. This is how one Dockerfile serves both
+environments:
+
+- **Dev** (`compose.override.yaml`) → `target: dev`. Stops at the `dev` stage, which keeps
+  dev dependencies and runs `npm run dev`. The bind-mount (`.:/app`) plus
+  `WATCHPACK_POLLING=true` give hot reload against your local source.
+- **Prod** (`compose.prod.yaml`) → `target: runner`. Builds through to the final,
+  minimal `runner` image (`node server.js`).
+
+### Why prod sets `target: runner` explicitly
+
+`runner` is already the last stage, so a build with no target would end there anyway —
+yet naming it explicitly is deliberate:
+
+- **Future-proofing.** If someone later appends a stage *below* `runner` (say a `test`
+  stage for CI), an unset target would silently run to the new bottom stage and ship the
+  wrong image. Pinning `target: runner` guarantees production always gets the intended
+  stage, no matter what is added.
+- **Explicitness.** The dev override already names its target (`dev`); naming `runner` in
+  prod keeps both files symmetric and leaves zero ambiguity for the next reader.
+
+### Who runs `builder`, then?
+
+Neither Compose file targets `builder` — but production still runs it. In **dev**, Compose
+stops at `dev`. In **prod**, Compose targets `runner`, and because `runner` copies from it
+(`COPY --from=builder …`), Docker's build engine runs `builder` (and `deps`) automatically
+as prerequisites. See [Why `runner` is never explicitly targeted](./dockerfile.md#why-runner-is-never-explicitly-targeted).
 
 ## File-load permutations
 
@@ -73,13 +102,3 @@ environment as the trailing variant (mirrors `build:dev` / `build:prod`).
 
 App serves on http://localhost:3000. Add env vars under the `web` service's
 `environment:` key in `compose.override.yaml` (dev) or `compose.prod.yaml` (prod).
-
-## `NODE_ENV` vs deployment environment
-
-Keep the two axes separate. `NODE_ENV` describes the **build mode** and Node only
-recognises `development` / `production` / `test` — the Dockerfile sets it per stage
-(`dev` → `development`, `builder`/`runner` → `production`). Never set
-`NODE_ENV=staging`: a non-`production` value makes `npm install` pull devDependencies
-and libraries fall back to dev behaviour. If a middle environment is ever added, name
-it `compose.staging.yaml`, drive selection with a separate var (e.g. `APP_ENV=staging`),
-and keep `NODE_ENV=production` for it.
