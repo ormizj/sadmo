@@ -1,7 +1,9 @@
 # Dockerfile
 
-A single multi-stage `Dockerfile` builds every environment. Stages layer top-to-bottom
-so each reuses the one before it:
+A single multi-stage `Dockerfile` builds every environment. Every stage builds
+`FROM base` and pulls just the artifacts it needs from earlier stages
+(`COPY --from=…`) — a dependency graph rooted at `base`, not a linear chain where
+each stage extends the one above it:
 
 - **`base`** — pins `node:${NODE_VERSION}` and sets the `/app` working directory. Every
   other stage starts `FROM base`.
@@ -52,21 +54,22 @@ This `deps → builder → runner` shape is the standard flow for containerizing
 app, and it relies on `output: "standalone"` in `next.config.ts` to produce a
 self-contained `server.js`.
 
-## Why `runner` is never explicitly targeted
+## Why `builder` is never explicitly targeted
 
-Nothing "invokes" the `runner` stage, yet it is what production ships. Two reasons:
+Each environment targets a *named* stage — dev stops at `dev`, prod stops at `runner`
+(both set in [`compose.md`](./compose.md)). **`builder` is never a target**, yet
+production can't be built without it. It runs as a *prerequisite*:
 
-- **It is the last stage.** A plain `docker build` with no target reads the file top to
-  bottom and ends at the final stage — `runner`.
-- **`COPY --from=builder` makes `builder` a prerequisite.** Even when a build targets
-  `runner`, its `COPY --from=builder /app/.next/standalone ./` (and the other
-  `--from=builder` copies) create a **build-graph dependency**. Docker's engine sees that
-  `runner` needs `builder`'s output — which needs `deps` — so it runs `deps` and `builder`
-  first automatically, in the background, then keeps only the copied files. You never
-  target `builder` for production; `runner` pulls it in by dependency.
+`runner`'s `COPY --from=builder /app/.next/standalone ./` (and the other
+`--from=builder` copies) create a **build-graph dependency**. When a build targets
+`runner`, Docker's engine sees that `runner` needs `builder`'s output — which needs
+`deps` — so it runs `deps` and `builder` first automatically, then keeps only the
+copied files. You target the finish line (`runner`); Docker pulls `builder` in behind it.
 
-You only target a stage explicitly when you want the build to **stop early** (dev) or to
-**pin the finish line** (prod) — both handled in [`compose.md`](./compose.md).
+`runner` being the **last stage** also makes it the default: a plain `docker build`
+with no `--target` runs top-to-bottom and ends at `runner`. Prod still pins
+`target: runner` explicitly so a stage added below it can't hijack the default — see
+[`compose.md`](./compose.md).
 
 ## `NODE_ENV` vs deployment environment
 

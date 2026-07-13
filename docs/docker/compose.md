@@ -95,7 +95,7 @@ yet naming it explicitly is deliberate:
 Neither Compose file targets `builder` — but production still runs it. In **dev**, Compose
 stops at `dev`. In **prod**, Compose targets `runner`, and because `runner` copies from it
 (`COPY --from=builder …`), Docker's build engine runs `builder` (and `deps`) automatically
-as prerequisites. See [Why `runner` is never explicitly targeted](./dockerfile.md#why-runner-is-never-explicitly-targeted).
+as prerequisites. See [Why `builder` is never explicitly targeted](./dockerfile.md#why-builder-is-never-explicitly-targeted).
 
 ## File-load permutations
 
@@ -108,22 +108,5 @@ as prerequisites. See [Why `runner` is never explicitly targeted](./dockerfile.m
 
 The last row is the reason prod is loaded with an explicit set that omits the
 override, and why bare `docker compose down`/`logs` (which auto-load the dev
-override) must not be run against a prod stack. Always go through the npm scripts.
-
-## Commands
-
-Scripts follow the de-facto npm convention `docker:<task>:<env>` — task first,
-environment as the trailing variant (mirrors `build:dev` / `build:prod`).
-
-| Command | What it does |
-|---|---|
-| `npm run docker:up:dev` | Build + run `web` in dev in the foreground (auto-loads the override; hot reload; Ctrl+C stops). |
-| `npm run docker:up:prod` | Build + run `web` in production detached (background). |
-| `npm run docker:down:dev` | Stop and remove the dev stack. |
-| `npm run docker:down:prod` | Stop and remove the production stack. |
-| `npm run docker:logs:dev` | Follow logs of the dev stack. |
-| `npm run docker:logs:prod` | Follow logs of the production stack. |
-| `npm run docker:build:prod` | Build the production image without starting anything. |
-
-App serves on http://localhost:3000. Add env vars under the `web` service's
-`environment:` key in `compose.override.yaml` (dev) or `compose.prod.yaml` (prod).
+override) must not be run against a prod stack. Always go through the
+[npm scripts](./general.md#commands).
