@@ -46,3 +46,6 @@ next-env.d.ts
 
 # claude code agent-internal session memory
 .claude/agent-memory/
+
+# Synology Drive sync bookkeeping (created in every folder; keep local only)
+.drive_sync/
