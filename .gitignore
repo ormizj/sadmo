@@ -43,3 +43,6 @@ next-env.d.ts
 # local
 .idea
 *.local.*
+
+# claude code agent-internal session memory
+.claude/agent-memory/
