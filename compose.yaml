@@ -4,3 +4,34 @@ services:
       context: .
     ports:
       - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://sadmo:sadmo@db:5432/sadmo?schema=public
+      - SESSION_SECRET=${SESSION_SECRET}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - EMAIL_FROM=${EMAIL_FROM}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=sadmo
+      - POSTGRES_PASSWORD=sadmo
+      - POSTGRES_DB=sadmo
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sadmo -d sadmo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:

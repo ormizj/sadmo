@@ -2,10 +2,18 @@ services:
   web:
     build:
       target: dev
-    command: npm run dev
+    # Ensure the Prisma client exists inside the anonymous node_modules volume.
+    command: sh -c "npx prisma generate && npm run dev"
     volumes:
       - .:/app
       - /app/node_modules
       - /app/.next
-    # environment:
-    #   - NEXT_PUBLIC_EXAMPLE=value
+    environment:
+      - APP_URL=http://localhost:3000
+
+  # Dev mail sink: catches all outbound email. UI at http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"

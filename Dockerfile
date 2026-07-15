@@ -19,6 +19,11 @@ FROM base AS builder
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Generate the Prisma client before building so the app's imports resolve.
+# Prisma 7 uses the pg driver adapter + query compiler, so there is no separate
+# query-engine binary to ship — the generated client in node_modules is enough
+# and gets traced into .next/standalone.
+RUN npx prisma generate
 RUN --mount=type=cache,target=/app/.next/cache \
   npm run build
 

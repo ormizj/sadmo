@@ -9,10 +9,12 @@
       "contacts": "Contactos",
       "companies": "Empresas",
       "reports": "Informes",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "adminUsers": "Usuarios"
     },
     "search": "Buscar…",
     "notifications": "Notificaciones",
+    "signOut": "Cerrar sesión",
     "user": {
       "fallbackName": "Usuario",
       "fallbackEmail": "usuario@empresa.com"
@@ -53,7 +55,37 @@
     "orSeparator": "O",
     "continueWithGoogle": "Continuar con Google",
     "noAccount": "¿No tienes una cuenta?",
-    "signUp": "Regístrate"
+    "signUp": "Regístrate",
+    "errors": {
+      "invalidCredentials": "Correo electrónico o contraseña incorrectos."
+    }
+  },
+  "SetPassword": {
+    "title": "Establece tu contraseña",
+    "subtitle": "Elige una contraseña para activar tu cuenta.",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "submit": "Establecer contraseña",
+    "submitLoading": "Guardando…",
+    "invalid": "Este enlace de invitación no es válido o ha caducado. Pide a un administrador que te envíe uno nuevo.",
+    "errors": {
+      "invalidToken": "Este enlace de invitación no es válido o ha caducado.",
+      "invalidInput": "Comprueba tu contraseña e inténtalo de nuevo."
+    }
+  },
+  "AdminUsers": {
+    "title": "Invitar a un usuario",
+    "subtitle": "Crea una cuenta y envía por correo electrónico a la persona un enlace para establecer su contraseña.",
+    "emailLabel": "Correo electrónico",
+    "nameLabel": "Nombre",
+    "roleLabel": "Rol",
+    "roleUser": "Usuario",
+    "roleAdmin": "Administrador",
+    "submit": "Enviar invitación",
+    "submitLoading": "Enviando…",
+    "success": "Invitación enviada a {email}.",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
+    "errorNetwork": "Error de red. Inténtalo de nuevo."
   },
   "LocaleSwitcher": {
     "label": "Idioma",
