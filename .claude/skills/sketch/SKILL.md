@@ -3,7 +3,7 @@ name: sketch
 description: Create a commit-tagged explanatory diagram of how part of the system currently works, saved under docs/sketches/. Triggers on "sketch how X works", "diagram X", "visualize X", "draw the X flow".
 argument-hint: <what to visualize>
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git status:*), Write, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Bash(git rev-parse:*), Bash(git status:*), Bash(git mv:*), Write, AskUserQuestion
 ---
 
 Produce a **point-in-time sketch** — a diagram that shows how some part of the system
@@ -11,7 +11,7 @@ works *right now* — into `docs/sketches/`. Sketches are snapshots, **not** liv
 they can go stale, so every one is stamped with the commit it depicts. Regenerate rather
 than silently edit when the code moves.
 
-Read the convention in [`docs/sketches/general.md`](../../../docs/sketches/general.md)
+Read the convention in [`docs/sketches/README.md`](../../../docs/sketches/README.md)
 (create it from the template in step 5 if it's missing) before writing your first sketch.
 
 ## 1. Resolve the subject
@@ -19,9 +19,12 @@ Read the convention in [`docs/sketches/general.md`](../../../docs/sketches/gener
 Take what to visualize from the args (e.g. `sketch the prisma generate flow`). If no
 subject was given, ask in plain text what to sketch, then stop.
 
-Derive a kebab-case **slug** for the filename (e.g. `prisma-generate-dev-vs-prod`).
-Reusing an existing slug overwrites that sketch and refreshes its `commit`/`date` — that
-is the intended "the code moved, redraw it" path.
+Derive a kebab-case **slug** (e.g. `prisma-generate-dev-vs-prod`); the filename is
+`<YYYY-MM-DD>-<slug>.md` with **today's date** as the prefix, so the folder listing sorts
+chronologically and the freshest sketches surface at a glance. If a sketch for the same
+`<slug>` already exists under an **older** date, `git mv` it to today's date first, then
+overwrite its contents — one dated file per topic, always showing its latest date. That
+rename + rewrite is the intended "the code moved, redraw it" path.
 
 ## 2. Understand the real code
 
@@ -41,12 +44,13 @@ and line numbers you'll reference in the caption.
 Default to **mermaid** (`flowchart` / `sequenceDiagram` / `stateDiagram`, whichever fits
 the story — the repo already uses mermaid in `.claude/rules/ARCHITECTURE.md`). Reach for
 an **image** only when the user asks for one or a graph diagram genuinely can't express
-it; put image assets in `docs/sketches/assets/<slug>.<ext>` and embed them with a
-relative `![alt](./assets/<slug>.<ext>)`. Set `kind:` accordingly (`mermaid` | `image`).
+it; put image assets in `docs/sketches/assets/<basename>.<ext>` (the same
+`<YYYY-MM-DD>-<slug>` stem as the sketch) and embed them with a relative
+`![alt](./assets/<basename>.<ext>)`. Set `kind:` accordingly (`mermaid` | `image`).
 
 ## 5. Write the sketch
 
-Write `docs/sketches/<slug>.md` with this frontmatter contract:
+Write `docs/sketches/<YYYY-MM-DD>-<slug>.md` with this frontmatter contract:
 
 ```yaml
 ---
@@ -62,9 +66,10 @@ Then the diagram (a ` ```mermaid ` fence, or the embedded image) followed by a *
 caption** — a few sentences in the tight house style of `docs/docker/*.md` that say what
 the picture shows and point at the real files/lines. It's a caption, not a full doc.
 
-If `docs/sketches/general.md` does not exist yet, create it stating the convention:
+If `docs/sketches/README.md` does not exist yet, create it stating the convention:
 sketches are point-in-time snapshots, not living docs; trust the `commit` field to know
-what code state a sketch reflects; regenerate (rerun this skill) rather than silently
+what code state a sketch reflects; filenames are date-prefixed (`<YYYY-MM-DD>-<slug>.md`)
+so the listing sorts by freshness; regenerate (rerun this skill) rather than silently
 editing when the code moves; `kind`/`assets` layout as above.
 
 ## 6. Offer a preview

@@ -50,5 +50,5 @@ hot reload (`compose.override.yaml:2-12`), and adds a **dev-only `mailpit`** ema
 (`compose.override.yaml:14-19`). **Prod** (`-f compose.yaml -f compose.prod.yaml up -d`)
 runs the prebuilt `runner` image (`node server.js` from `.next/standalone`) with
 `restart: unless-stopped`, detached, no bind mounts and no mailpit
-(`compose.prod.yaml`). See [where prisma generate runs](./prisma-generate-dev-vs-prod.md)
+(`compose.prod.yaml`). See [where prisma generate runs](./2026-07-15-prisma-generate-dev-vs-prod.md)
 for how the client is built in each.
