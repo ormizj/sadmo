@@ -16,6 +16,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  migrate:
+    build:
+      context: .
+      target: migrator
+    environment:
+      - DATABASE_URL=postgresql://sadmo:sadmo@db:5432/sadmo?schema=public
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@sadmo.local}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ADMIN_NAME=${ADMIN_NAME:-Admin}
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:17

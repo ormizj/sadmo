@@ -8,6 +8,16 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
   npm ci --no-audit --no-fund
 
+# One-shot stage that applies migrations and seeds the DB before the app starts.
+# `deps` installed devDeps (prisma CLI + tsx), so no extra install is needed; the
+# Prisma client is generated here because the seed imports @prisma/client.
+FROM base AS migrator
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json prisma.config.ts ./
+COPY prisma ./prisma
+RUN npx prisma generate
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed"]
+
 FROM base AS dev
 ENV NODE_ENV=development
 ENV WATCHPACK_POLLING=true
