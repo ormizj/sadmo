@@ -15,9 +15,15 @@ server-only code you can call *from* the client.
 
 | Mode | Directive | Runs on | Ships component JS? | Reach for it when |
 |---|---|---|---|---|
-| **Server Component** | none (default) | server only | no | fetching data, using secrets, keeping the bundle small |
+| **Server Component** | none (default) | server by default* | no* | fetching data, using secrets, keeping the bundle small |
 | **Client Component** | `'use client'` | server (prerender) **then** client (hydrate) | yes | state, effects, event handlers, browser APIs |
 | **Server Function** | `'use server'` | server only | no | mutations, form submits, secure operations |
+
+> \* **"No directive" is a default, not a wall.** A file with no directive is
+> *shared*: it renders on the server by default, but if it's **imported into a
+> `'use client'` module graph** it's compiled into the client bundle and runs on the
+> client too. So "no directive" does **not** mean "server only" — see
+> [No directive = shared](#no-directive--shared) below.
 
 ## `"use server"` (Server Functions)
 
@@ -99,6 +105,36 @@ of the Server Component itself doesn't go over the wire at all).
 Use them to fetch data close to the source and to touch backend resources — API
 keys, tokens, and other secrets stay on the server and are never exposed to the
 client.
+
+### No directive = shared
+
+A directive-less component is **not permanently a Server Component** — it renders
+wherever it's used. `'use client'` marks a **boundary**, and *"all of a
+`'use client'` file's imports and the components it directly renders are included in
+the client bundle"* — so a shared component pulled into that module graph is
+compiled to the client with it, no directive of its own needed.
+
+`Logo.tsx` in this repo is exactly this. It has no directive, yet:
+
+| Where it's imported | That consumer's directive | Where `Logo` runs |
+|---|---|---|
+| `(guest)/login/page.tsx` | none (Server Component) | **server** — no JS shipped |
+| `(app)/layout.tsx` | none | **server** |
+| `app/dev/components/page.tsx` | `'use client'` | **client** — bundled & shipped |
+
+Same file, two runtime homes, decided by the import site — not a contradiction.
+
+Two caveats:
+
+- **It's the import graph, not "used on a client page."** A directive-less
+  component **passed as `children` or a prop** to a Client Component is *not* in that
+  client's module graph: it still renders on the server and is handed over as
+  finished output. Only components a `'use client'` file **imports** cross into the
+  client bundle.
+- **Only truly shareable components can be pulled client-side.** `Logo` is safe
+  because it's pure presentational markup — no `async`, no secrets, no `server-only`.
+  A directive-less component that uses server-only features can't be imported into a
+  client subtree; do that and the build fails.
 
 ## Browser APIs (`window`, `document`)
 
