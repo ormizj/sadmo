@@ -1,23 +1,29 @@
 # Directives & rendering
 
 Where code runs in the App Router is decided by **directives** at the top of a
-file. Three modes matter: **Server Components** (the default — no directive),
+file. Three cases matter: **Server Components** (the default — no directive),
 **Client Components** (`'use client'`), and **Server Functions** (`'use server'`).
-They split across the **server/client boundary**: a Server Component never ships to
-the browser, a Client Component runs on *both* sides, and a Server Function is
-server-only code you can call *from* the client.
+The first two are the **rendering modes** for components; the third is different in
+kind — `'use server'` doesn't render anything, it exposes a callable server-side
+function. They split across the **server/client boundary**: a Server Component never
+ships to the browser, a Client Component runs on *both* sides, and a Server Function
+is server-only code you can call *from* the client.
 
 > **This is not the "everything renders on the client" model.** In the App Router
 > the server is the default and the boundary is opt-in. Read the browser-API
 > section before reaching for `ssr: false` — it does **not** work everywhere.
 
-## The three rendering modes
+## The three at a glance
 
-| Mode | Directive | Runs on | Ships component JS? | Reach for it when |
+The first two rows are the component **rendering modes**; the `Server Function` row
+is not a rendering mode — it's a callable function, so "Runs on" means where its
+body executes and "ships component JS" is trivially no (it isn't a component).
+
+| What | Directive | Runs on | Ships component JS? | Reach for it when |
 |---|---|---|---|---|
 | **Server Component** | none (default) | server by default* | no* | fetching data, using secrets, keeping the bundle small |
 | **Client Component** | `'use client'` | server (prerender) **then** client (hydrate) | yes | state, effects, event handlers, browser APIs |
-| **Server Function** | `'use server'` | server only | no | mutations, form submits, secure operations |
+| **Server Function** | `'use server'` | server (function body) | n/a — not a component | mutations, form submits, secure operations |
 
 > \* **"No directive" is a default, not a wall.** A file with no directive is
 > *shared*: it renders on the server by default, but if it's **imported into a
