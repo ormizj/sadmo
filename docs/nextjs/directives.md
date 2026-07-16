@@ -21,15 +21,24 @@ body executes and "ships component JS" is trivially no (it isn't a component).
 
 | What | Directive | Runs on | Ships component JS? | Reach for it when |
 |---|---|---|---|---|
-| **Server Component** | none (default) | server by default* | no* | fetching data, using secrets, keeping the bundle small |
+| **Server Component** *(default, shared)* | none | server by default* | no* | fetching data, static UI, keeping the bundle small — secrets/DB only with `server-only`† |
 | **Client Component** | `'use client'` | server (prerender) **then** client (hydrate) | yes | state, effects, event handlers, browser APIs |
 | **Server Function** | `'use server'` | server (function body) | n/a — not a component | mutations, form submits, secure operations |
 
-> \* **"No directive" is a default, not a wall.** A file with no directive is
-> *shared*: it renders on the server by default, but if it's **imported into a
-> `'use client'` module graph** it's compiled into the client bundle and runs on the
-> client too. So "no directive" does **not** mean "server only" — see
-> [No directive = shared](#no-directive--shared) below.
+> \* **"No directive" is a default, not a wall.** A file with no directive is not
+> *guaranteed* to be a Server Component — it's **shared**: it renders on the server
+> *by default*, but if it's **imported into a `'use client'` module graph** it's
+> compiled into the client bundle and runs on the client too. So "no directive" does
+> **not** mean "server only" — see [No directive = shared](#no-directive--shared)
+> below.
+>
+> † **Because it's shared, "no directive" does not make secrets safe.** A no-directive
+> module is only a *trusted* server module — safe for secrets, DB access, and other
+> server-only work — when it can't be pulled to the client: either it's a route-level
+> **page/layout** (never imported into a client component) or it's marked
+> **`import "server-only"`** (build fails if it reaches the client). Don't put secrets
+> in a plain shared component and rely on the missing directive to protect them — see
+> [Keep secrets server-only](#keep-secrets-server-only-with-server-only) below.
 
 ## `"use server"` (Server Functions)
 
@@ -117,9 +126,11 @@ the server**, render into React's RSC payload, and are **never hydrated** — so
 ship no component JavaScript and **reduce** the bundle sent to the browser (the JS
 of the Server Component itself doesn't go over the wire at all).
 
-Use them to fetch data close to the source and to touch backend resources — API
-keys, tokens, and other secrets stay on the server and are never exposed to the
-client.
+Use them to fetch data close to the source and to touch backend resources. In a
+**page or layout**, secrets stay on the server safely — a route entry point is never
+imported into a Client Component, so it can't be pulled to the client. A plain
+**shared component** (no directive) has no such guarantee, so anything secret it
+touches must be in a module marked `server-only` — see the two subsections below.
 
 ### No directive = shared
 
