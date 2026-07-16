@@ -48,6 +48,20 @@ export default function Page() {
 To call one from a Client Component it must live in a dedicated file using the
 top-of-file form.
 
+**Constraints of the top-of-file form:**
+
+- **Every export must be an `async function`.** The directive turns exports into
+  callable server references, so exporting a plain constant or a sync function is a
+  build error.
+- **The directive alone does nothing.** A file containing only `"use server"` with
+  no exports declares zero Server Functions — its *visible* result is the same as an
+  empty file (nothing is exposed), but it's not the same thing: it's a tagged
+  server-reference module with no references. The meaning diverges the moment you add
+  an export — with the directive that export becomes a public endpoint; without it,
+  the same `export async function` is just an ordinary server-side module export the
+  client cannot call. So a lone directive is pointless; it only earns its place once
+  something is exported.
+
 > **The generated reference is a public POST endpoint.** Once created and exported,
 > a Server Function is reachable via a direct POST request — not only through your
 > UI, and even if no component imports it (unused ones are dead-code-eliminated and
