@@ -145,6 +145,38 @@ Two caveats:
   A directive-less component that uses server-only features can't be imported into a
   client subtree; do that and the build fails.
 
+### Keep secrets server-only with `server-only`
+
+Because a directive-less module is *shared*, a file that reads a secret can be
+imported into a Client Component **by accident** — nothing about the missing
+directive stops it. Two things guard against a leak:
+
+1. **Env var stripping (partial, silent).** Only `NEXT_PUBLIC_`-prefixed env vars
+   are included in the client bundle; any other `process.env.X` reachable from the
+   client is **replaced with an empty string**. So the secret *value* never ships —
+   but the code doesn't error, it just silently misbehaves (an `API_KEY` becomes
+   `""` and the request fails). A backstop, not a real guard.
+2. **`import "server-only"` (the real guard).** Add it to the top of any module that
+   touches secrets, the database, or other server-only resources. If that module is
+   ever pulled into a client module graph, the **build fails** — turning a silent
+   runtime leak into a hard, unmissable error.
+
+```ts
+import "server-only"; // build error if this file reaches the client bundle
+
+export async function getData() {
+  const res = await fetch("https://example.com/data", {
+    headers: { authorization: process.env.API_KEY! },
+  });
+  return res.json();
+}
+```
+
+In this repo every secret-touching module carries the marker — `src/env.ts`,
+`src/lib/db.ts`, and everything under `src/lib/auth/`, `src/lib/email/`,
+`src/lib/users/`. See `.claude/rules/ARCHITECTURE.md` (the data-access layer is
+`server-only`, re-checks authorization, and returns DTOs).
+
 ## Browser APIs (`window`, `document`)
 
 Because Client Components are **prerendered on the server**, code that reaches for a
