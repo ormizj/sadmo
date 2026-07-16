@@ -68,13 +68,15 @@ top-of-file form.
   client cannot call. So a lone directive is pointless; it only earns its place once
   something is exported.
 
-> **The generated reference is a public POST endpoint.** Once created and exported,
-> a Server Function is reachable via a direct POST request — not only through your
-> UI, and even if no component imports it (unused ones are dead-code-eliminated and
-> never get an endpoint). So inside **every** Server Function: validate input, read
-> auth from cookies/headers, and check authorization before doing the work. Return
-> only the data the UI needs — return values are serialized to the client, so never
-> hand back raw database records.
+> **The generated reference is a public POST endpoint.** Once a Server Function is
+> exported **and referenced somewhere in your app**, Next.js assigns it a secure,
+> non-deterministic action ID and it becomes reachable via a direct POST request —
+> not only through your UI. (A Server Function that is referenced *nowhere* is
+> dead-code-eliminated, so it gets no ID and no endpoint — but don't lean on that as
+> a security boundary.) So treat **every** Server Function as a public endpoint:
+> validate input, read auth from cookies/headers, and check authorization before
+> doing the work. Return only the data the UI needs — return values are serialized to
+> the client, so never hand back raw database records.
 
 ## `"use client"` (Client Components)
 
@@ -94,6 +96,13 @@ component renders on the client only.)
 
 Use a Client Component for `useState`, `useEffect` and other lifecycle hooks,
 event handlers like `onClick`, and anything that touches browser APIs.
+
+**Props crossing the boundary must be serializable.** When a Server Component
+renders a Client Component, the props are serialized to be sent over the wire, so
+they must be serializable types — you can't pass a function, a class instance, or
+other non-serializable value from the server into a Client Component. (The exception
+is a Server Function, which *is* passable as a prop — it's sent as a reference, not
+serialized data.)
 
 ## Server Components (default)
 
