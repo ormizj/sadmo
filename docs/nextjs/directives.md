@@ -123,14 +123,15 @@ serialized data.)
 
 Layouts and pages are Server Components unless marked otherwise. They run **only on
 the server**, render into React's RSC payload, and are **never hydrated** — so they
-ship no component JavaScript and **reduce** the bundle sent to the browser (the JS
-of the Server Component itself doesn't go over the wire at all).
+ship no component JavaScript and **reduce** the browser bundle. In the browser they're
+**inert**: no state, no re-render, no event listeners. A Server Component only changes
+when the server renders it again and streams a fresh payload — via navigation,
+`router.refresh()`, or a Server Action. That's *why* `useState` can't live in one:
+there's no client runtime to hold the state.
 
-Use them to fetch data close to the source and to touch backend resources. In a
-**page or layout**, secrets stay on the server safely — a route entry point is never
-imported into a Client Component, so it can't be pulled to the client. A plain
-**shared component** (no directive) has no such guarantee, so anything secret it
-touches must be in a module marked `server-only` — see the two subsections below.
+Use them to fetch data and touch backend resources. Secrets are safe in a **page or
+layout** (a route entry point is never pulled client-side); a plain **shared
+component** needs `server-only` — see below.
 
 ### No directive = shared
 
@@ -150,8 +151,15 @@ compiled to the client with it, no directive of its own needed.
 
 Same file, two runtime homes, decided by the import site — not a contradiction.
 
-Two caveats:
+Three caveats:
 
+- **What the component *does* decides the directive, not where it's used.** A
+  no-directive component that calls `useState`/`onClick` only works when imported
+  under a client boundary; render it on the server (the default) and the **build
+  fails** — *"…only works in a Client Component but none of its parents are marked
+  with `use client`."* Mark such a component `'use client'` explicitly; relying on an
+  implicit client importer is a fragile anti-pattern. `Logo` needs no directive
+  precisely because it uses none of these.
 - **It's the import graph, not "used on a client page."** A directive-less
   component **passed as `children` or a prop** to a Client Component is *not* in that
   client's module graph: it still renders on the server and is handed over as
