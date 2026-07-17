@@ -15,7 +15,9 @@ FROM base AS migrator
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json package-lock.json prisma.config.ts ./
 COPY prisma ./prisma
-RUN npx prisma generate
+# generate never connects to the DB, but Prisma 7's config resolves env("DATABASE_URL")
+# eagerly on load — supply a throwaway URL so the config loads at build time.
+RUN DATABASE_URL="postgresql://build:build@localhost:5432/build" npx prisma generate
 CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma db seed"]
 
 FROM base AS dev
@@ -33,7 +35,9 @@ COPY . .
 # Prisma 7 uses the pg driver adapter + query compiler, so there is no separate
 # query-engine binary to ship — the generated client in node_modules is enough
 # and gets traced into .next/standalone.
-RUN npx prisma generate
+# generate never connects to the DB, but Prisma 7's config resolves env("DATABASE_URL")
+# eagerly on load — supply a throwaway URL so the config loads at build time.
+RUN DATABASE_URL="postgresql://build:build@localhost:5432/build" npx prisma generate
 RUN --mount=type=cache,target=/app/.next/cache \
   npm run build
 

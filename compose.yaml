@@ -49,4 +49,5 @@ services:
       retries: 10
 
 volumes:
+  # sadmo_pgdata — Postgres database data; the only volume whose loss matters.
   pgdata:
