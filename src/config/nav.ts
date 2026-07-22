@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 export type NavItem = {
-  key: string;
+  key: "dashboard" | "contacts" | "companies" | "reports" | "settings";
   icon: LucideIcon;
   href: string;
   active?: boolean;

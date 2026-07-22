@@ -1,3 +1,4 @@
+import type { Locale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 const CARD_KEYS = ["contacts", "openDeals", "tasksDue"] as const;
@@ -7,7 +8,7 @@ export default async function DashboardPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale } = (await params) as { locale: Locale };
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Dashboard" });
 

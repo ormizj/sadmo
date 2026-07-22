@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Locale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth/session";
 import CreateUserForm from "@/components/admin/CreateUserForm";
@@ -8,7 +9,7 @@ export default async function AdminUsersPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale } = (await params) as { locale: Locale };
   setRequestLocale(locale);
 
   const user = await getCurrentUser();

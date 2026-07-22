@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { Globe } from "lucide-react";
+import type { Locale } from "next-intl";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
@@ -13,7 +14,7 @@ export default function LocaleSwitcher() {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  function onChange(nextLocale: string) {
+  function onChange(nextLocale: Locale) {
     startTransition(() => {
       router.replace(pathname, { locale: nextLocale });
     });
@@ -30,7 +31,7 @@ export default function LocaleSwitcher() {
         aria-label={t("label")}
         value={locale}
         disabled={isPending}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value as Locale)}
         className="h-10 appearance-none rounded-lg border border-slate-200 bg-white py-2 pl-8 pr-3 text-sm text-slate-700 outline-none transition hover:bg-slate-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 disabled:opacity-60"
       >
         {routing.locales.map((cur) => (

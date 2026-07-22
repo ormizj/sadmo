@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Locale } from "next-intl";
 import { Search, Bell, LogOut, ShieldCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link, redirect } from "@/i18n/navigation";
@@ -15,7 +16,7 @@ export default async function AppLayout({
   children: ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale } = (await params) as { locale: Locale };
   setRequestLocale(locale);
 
   const user = await getCurrentUser();

@@ -1,3 +1,4 @@
+import type { Locale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Logo from "@/components/Logo";
 import { getInviteStatus } from "@/lib/users/data";
@@ -10,7 +11,7 @@ export default async function SetPasswordPage({
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ token?: string }>;
 }) {
-  const { locale } = await params;
+  const { locale } = (await params) as { locale: Locale };
   setRequestLocale(locale);
   const { token } = await searchParams;
   const t = await getTranslations({ locale, namespace: "SetPassword" });
