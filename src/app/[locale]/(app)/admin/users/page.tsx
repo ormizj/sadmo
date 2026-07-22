@@ -1,6 +1,4 @@
-import { notFound } from "next/navigation";
 import { getRouteTranslations } from "@/i18n/locale";
-import { getCurrentUser } from "@/lib/auth/session";
 import CreateUserForm from "@/components/admin/CreateUserForm";
 
 export default async function AdminUsersPage({
@@ -9,9 +7,6 @@ export default async function AdminUsersPage({
   params: Promise<{ locale: string }>;
 }) {
   const t = await getRouteTranslations(params, "AdminUsers");
-
-  const user = await getCurrentUser();
-  if (!user || user.role !== "ADMIN") notFound();
 
   return (
     <div className="mx-auto max-w-lg">
