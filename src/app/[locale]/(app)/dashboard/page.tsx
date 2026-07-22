@@ -1,5 +1,4 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getRouteLocale } from "@/i18n/locale";
+import { getRouteTranslations } from "@/i18n/locale";
 
 const CARD_KEYS = ["contacts", "openDeals", "tasksDue"] as const;
 
@@ -8,9 +7,7 @@ export default async function DashboardPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const locale = await getRouteLocale(params);
-  setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "Dashboard" });
+  const t = await getRouteTranslations(params, "Dashboard");
 
   return (
     <div className="space-y-6">

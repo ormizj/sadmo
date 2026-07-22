@@ -1,5 +1,4 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getRouteLocale } from "@/i18n/locale";
+import { getRouteTranslations } from "@/i18n/locale";
 import Logo from "@/components/Logo";
 import LoginForm from "@/components/auth/LoginForm";
 
@@ -8,9 +7,7 @@ export default async function LoginPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const locale = await getRouteLocale(params);
-  setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "Login" });
+  const t = await getRouteTranslations(params, "Login");
 
   return (
     <div className="rounded-2xl border border-white/70 bg-white/75 p-8 shadow-xl shadow-indigo-300/30 ring-1 ring-slate-900/5 backdrop-blur-xl sm:p-10">
