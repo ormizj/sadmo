@@ -11,3 +11,5 @@ runtime; Edge unsupported).
 - [`directives.md`](./directives.md) — the `'use client'` / `'use server'`
   directives and Server Components: where each runs, how prerender + hydration
   work, and safely using browser APIs.
+- [`env.md`](./env.md) — the `src/env.ts` env-var schema, `runtimeEnv` wiring,
+  and the `server` / `client` visibility split.

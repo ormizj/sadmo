@@ -180,7 +180,9 @@ directive stops it. Two things guard against a leak:
    are included in the client bundle; any other `process.env.X` reachable from the
    client is **replaced with an empty string**. So the secret *value* never ships —
    but the code doesn't error, it just silently misbehaves (an `API_KEY` becomes
-   `""` and the request fails). A backstop, not a real guard.
+   `""` and the request fails). A backstop, not a real guard. See
+   [`env.md` § server vs. client](./env.md#server-vs-client--visibility-and-validation)
+   for how the `src/env.ts` schema enforces the same split at the app level.
 2. **`import "server-only"` (the real guard).** Add it to the top of any module that
    touches secrets, the database, or other server-only resources. If that module is
    ever pulled into a client module graph, the **build fails** — turning a silent

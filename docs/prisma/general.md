@@ -75,10 +75,13 @@ npm run dev
 ## Environment variables
 
 `DATABASE_URL` is read by both `prisma.config.ts` (CLI) and `src/lib/db.ts`
-(runtime, via the validated `src/env.ts`). The `ADMIN_EMAIL` / `ADMIN_PASSWORD` /
-`ADMIN_NAME` vars are consumed **only** by `prisma/seed.ts` through `process.env`,
-so they are intentionally *not* in the app's runtime env schema. See `.env.example`
-for the full list.
+(runtime, via the validated [`src/env.ts`](../../src/env.ts) — see
+[`nextjs/env.md`](../nextjs/env.md) for how that schema works). The
+`ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` vars are consumed **only** by
+`prisma/seed.ts` through `process.env`, so they are intentionally *not* in the
+app's runtime env schema — see
+[`nextjs/env.md` § Vars outside the app schema](../nextjs/env.md#vars-outside-the-app-schema).
+See `.env.example` for the full list.
 
 ## Using the client
 
