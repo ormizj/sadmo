@@ -41,6 +41,71 @@ files winning. The rules differ by YAML type — this is what makes the layering
 The base holds `ports` once so both environments inherit it; dev/prod each set only
 their own `target` and extras.
 
+## Named volumes: declaration vs. mount
+
+A named volume shows up **twice**, and the two entries say different things — the
+same split as declaring a variable vs. using it. Nothing is duplicated.
+
+- **Declaration** — an entry under the **top-level** `volumes:` (aligned with
+  `services:`, not indented under a service). This *defines* the volume: its
+  identity, lifecycle, and any driver/options. The **YAML key is the logical
+  name**; an empty value (just `key:`) means "all defaults". Declared once per
+  volume, even if several services mount it.
+- **Mount** — an entry in a **service's** `volumes:` list, written
+  `SOURCE:TARGET`. This *attaches* a volume into one container. `SOURCE` is the
+  logical name (matching a top-level key); `TARGET` is the absolute path inside
+  the container where it appears.
+
+```yaml
+# compose.yaml
+services:
+  db:
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # mount: use "pgdata" at this path
+volumes:
+  pgdata:                                  # declaration: "pgdata" exists
+```
+
+Key points:
+
+- **Matched by name, not order.** `db`'s mount finds its volume by looking up the
+  key `pgdata` in the top-level block — reordering the declarations changes
+  nothing. The *name* carries no meaning to Docker; `next_cache:/app/.next`
+  (in `compose.override.yaml`) mounts at `.next` because the **target path** says
+  so, not because the volume is called `next_cache`. Renaming it to `banana`
+  everywhere would behave identically; the readable name is purely for humans.
+- **Docker scopes the name with the project.** The real volume Docker creates is
+  `<project>_<key>` — `pgdata` → `sadmo_pgdata`, `next_cache` → `sadmo_next_cache`.
+  The project name defaults to the directory name (`sadmo`) and can be overridden
+  with `COMPOSE_PROJECT_NAME` or `docker compose -p`. The `sadmo_` prefix never
+  appears in the files; Docker adds it at runtime, and it keeps these volumes from
+  colliding with same-named volumes in other Compose projects. A `name:` field on
+  the declaration opts out of this scoping (the name is then used as-is).
+- **A mount with no matching declaration is an error.** Compose requires every
+  named volume a service mounts to be declared up top; referencing an undeclared
+  one is rejected as an undefined-volume config error. The top-level block is the
+  allow-list of volumes services may name.
+- **Bind mounts need no declaration.** `.:/app` (dev) is also `SOURCE:TARGET`, but
+  its source is a **host path** (`.`, the project dir) rather than a name, so it's
+  a *bind mount*. Docker manages no identity for it — there's nothing to declare —
+  which is why only *named* volumes appear in the top-level block.
+
+### Two different `volumes:` keys — don't confuse the merge behavior
+
+The [merge rules](#how-merging-works) above list `volumes` under **sequences
+(appended)** — that means the **service-level** mount *list*. The **top-level**
+`volumes:` is a **mapping** and merges **key-by-key** instead. So across files:
+
+- Base `compose.yaml` declares `pgdata` (mounted by `db`).
+- `compose.override.yaml` declares `node_modules` and `next_cache` (mounted by
+  the dev `web`).
+- The merged top-level map is `{ pgdata, node_modules, next_cache }` — the
+  override's keys are added to the base's, not replacing them.
+
+Sources: [Top-level `volumes`](https://docs.docker.com/reference/compose-file/volumes/) ·
+[Service `volumes` short syntax](https://docs.docker.com/reference/compose-file/services/) ·
+[Merge rules reference](https://docs.docker.com/reference/compose-file/merge/).
+
 ## `target`: which stage each environment stops at
 
 `build.target` tells Compose to **stop the build at a named [Dockerfile stage](./dockerfile.md)**

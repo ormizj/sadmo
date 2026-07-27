@@ -9,10 +9,12 @@
       "contacts": "Contacts",
       "companies": "Companies",
       "reports": "Reports",
-      "settings": "Settings"
+      "settings": "Settings",
+      "adminUsers": "Users"
     },
     "search": "Search…",
     "notifications": "Notifications",
+    "signOut": "Sign out",
     "user": {
       "fallbackName": "User",
       "fallbackEmail": "user@company.com"
@@ -53,7 +55,37 @@
     "orSeparator": "OR",
     "continueWithGoogle": "Continue with Google",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "errors": {
+      "invalidCredentials": "Invalid email or password."
+    }
+  },
+  "SetPassword": {
+    "title": "Set your password",
+    "subtitle": "Choose a password to activate your account.",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "submit": "Set password",
+    "submitLoading": "Saving…",
+    "invalid": "This invite link is invalid or has expired. Ask an administrator to send a new one.",
+    "errors": {
+      "invalidToken": "This invite link is invalid or has expired.",
+      "invalidInput": "Please check your password and try again."
+    }
+  },
+  "AdminUsers": {
+    "title": "Invite a user",
+    "subtitle": "Create an account and email the person a link to set their password.",
+    "emailLabel": "Email",
+    "nameLabel": "Name",
+    "roleLabel": "Role",
+    "roleUser": "User",
+    "roleAdmin": "Admin",
+    "submit": "Send invite",
+    "submitLoading": "Sending…",
+    "success": "Invite sent to {email}.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorNetwork": "Network error. Please try again."
   },
   "LocaleSwitcher": {
     "label": "Language",

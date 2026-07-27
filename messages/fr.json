@@ -9,10 +9,12 @@
       "contacts": "Contacts",
       "companies": "Entreprises",
       "reports": "Rapports",
-      "settings": "Paramètres"
+      "settings": "Paramètres",
+      "adminUsers": "Utilisateurs"
     },
     "search": "Rechercher…",
     "notifications": "Notifications",
+    "signOut": "Se déconnecter",
     "user": {
       "fallbackName": "Utilisateur",
       "fallbackEmail": "utilisateur@entreprise.com"
@@ -53,7 +55,37 @@
     "orSeparator": "OU",
     "continueWithGoogle": "Continuer avec Google",
     "noAccount": "Vous n'avez pas de compte ?",
-    "signUp": "S'inscrire"
+    "signUp": "S'inscrire",
+    "errors": {
+      "invalidCredentials": "E-mail ou mot de passe incorrect."
+    }
+  },
+  "SetPassword": {
+    "title": "Définissez votre mot de passe",
+    "subtitle": "Choisissez un mot de passe pour activer votre compte.",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "submit": "Définir le mot de passe",
+    "submitLoading": "Enregistrement…",
+    "invalid": "Ce lien d'invitation est invalide ou a expiré. Demandez à un administrateur d'en envoyer un nouveau.",
+    "errors": {
+      "invalidToken": "Ce lien d'invitation est invalide ou a expiré.",
+      "invalidInput": "Veuillez vérifier votre mot de passe et réessayer."
+    }
+  },
+  "AdminUsers": {
+    "title": "Inviter un utilisateur",
+    "subtitle": "Créez un compte et envoyez par e-mail à cette personne un lien pour définir son mot de passe.",
+    "emailLabel": "E-mail",
+    "nameLabel": "Nom",
+    "roleLabel": "Rôle",
+    "roleUser": "Utilisateur",
+    "roleAdmin": "Administrateur",
+    "submit": "Envoyer l'invitation",
+    "submitLoading": "Envoi…",
+    "success": "Invitation envoyée à {email}.",
+    "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
+    "errorNetwork": "Erreur réseau. Veuillez réessayer."
   },
   "LocaleSwitcher": {
     "label": "Langue",

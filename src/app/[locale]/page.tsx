@@ -1,10 +1,10 @@
-import { redirect } from "@/i18n/navigation";
+import { getRouteLocale, redirectTo } from "@/i18n/locale";
 
 export default async function Home({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
-  redirect({ href: "/login", locale });
+  await getRouteLocale(params);
+  return redirectTo("/login");
 }

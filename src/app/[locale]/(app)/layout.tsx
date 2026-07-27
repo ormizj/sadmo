@@ -1,10 +1,13 @@
 import type { ReactNode } from "react";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, LogOut, ShieldCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getRouteLocale, redirectTo } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import Logo from "@/components/Logo";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { NAV } from "@/config/nav";
+import { getCurrentUser } from "@/lib/auth/session";
+import { logoutAction } from "./actions";
 
 export default async function AppLayout({
   children,
@@ -13,9 +16,14 @@ export default async function AppLayout({
   children: ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const locale = await getRouteLocale(params);
   setRequestLocale(locale);
+
+  const user = await getCurrentUser();
+  if (!user) return redirectTo("/login");
+
   const t = await getTranslations({ locale, namespace: "AppShell" });
+  const initial = user.name.trim().charAt(0).toUpperCase() || "U";
 
   return (
     <div className="flex min-h-dvh flex-1 bg-slate-50">
@@ -39,19 +47,35 @@ export default async function AppLayout({
               {t(`nav.${key}`)}
             </Link>
           ))}
+          {user.role === "ADMIN" && (
+            <Link
+              href="/admin/users"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              <ShieldCheck className="size-4.5" />
+              {t("nav.adminUsers")}
+            </Link>
+          )}
         </nav>
         <div className="flex items-center gap-3 rounded-lg px-3 py-2">
           <span className="grid size-9 place-items-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 text-sm font-semibold text-white">
-            U
+            {initial}
           </span>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-slate-900">
-              {t("user.fallbackName")}
+              {user.name}
             </p>
-            <p className="truncate text-xs text-slate-500">
-              {t("user.fallbackEmail")}
-            </p>
+            <p className="truncate text-xs text-slate-500">{user.email}</p>
           </div>
+          <form action={logoutAction}>
+            <button
+              type="submit"
+              aria-label={t("signOut")}
+              className="grid size-8 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            >
+              <LogOut className="size-4" />
+            </button>
+          </form>
         </div>
       </aside>
 
