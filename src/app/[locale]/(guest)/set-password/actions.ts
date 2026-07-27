@@ -1,7 +1,7 @@
 "use server";
 
-import { getLocale, getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
+import { redirectTo } from "@/i18n/locale";
 import { validateSetPassword } from "@/lib/validation/auth";
 import { hashPassword } from "@/lib/auth/password";
 import { consumeInviteToken } from "@/lib/users/data";
@@ -31,6 +31,5 @@ export async function setPasswordAction(
   if (!user) return { error: t("errors.invalidToken") };
 
   await createSession(user.id);
-  const locale = await getLocale();
-  return redirect({ href: "/dashboard", locale });
+  return redirectTo("/dashboard");
 }

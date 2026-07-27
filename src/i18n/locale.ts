@@ -1,3 +1,4 @@
+import "server-only";
 import { notFound } from "next/navigation";
 import {
   hasLocale,
@@ -6,7 +7,8 @@ import {
   type NamespaceKeys,
   type NestedKeyOf,
 } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { redirect } from "./navigation";
 import { routing } from "./routing";
 
 // Next types route params as `string`; `hasLocale` is a type guard that narrows
@@ -28,4 +30,13 @@ export async function getRouteTranslations<
   const locale = await getRouteLocale(params);
   setRequestLocale(locale);
   return getTranslations({ locale, namespace });
+}
+
+type RedirectHref = Parameters<typeof redirect>[0]["href"];
+
+// next-intl's `redirect` requires an explicit locale (unlike `Link`, which
+// infers it), so read the ambient request locale instead of threading it
+// through every call site. Must be awaited or returned — it never resolves.
+export async function redirectTo(href: RedirectHref) {
+  return redirect({ href, locale: await getLocale() });
 }

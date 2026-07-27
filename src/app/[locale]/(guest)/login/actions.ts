@@ -1,7 +1,7 @@
 "use server";
 
-import { getLocale, getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
+import { redirectTo } from "@/i18n/locale";
 import { validateLogin } from "@/lib/validation/auth";
 import { getUserByEmailWithSecret } from "@/lib/users/data";
 import { verifyPassword } from "@/lib/auth/password";
@@ -31,6 +31,5 @@ export async function loginAction(
   if (!ok) return invalid;
 
   await createSession(user.id);
-  const locale = await getLocale();
-  return redirect({ href: "/dashboard", locale });
+  return redirectTo("/dashboard");
 }

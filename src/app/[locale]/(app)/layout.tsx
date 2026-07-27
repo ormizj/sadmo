@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { Search, Bell, LogOut, ShieldCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getRouteLocale } from "@/i18n/locale";
-import { Link, redirect } from "@/i18n/navigation";
+import { getRouteLocale, redirectTo } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import Logo from "@/components/Logo";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { NAV } from "@/config/nav";
@@ -20,7 +20,7 @@ export default async function AppLayout({
   setRequestLocale(locale);
 
   const user = await getCurrentUser();
-  if (!user) return redirect({ href: "/login", locale });
+  if (!user) return redirectTo("/login");
 
   const t = await getTranslations({ locale, namespace: "AppShell" });
   const initial = user.name.trim().charAt(0).toUpperCase() || "U";
